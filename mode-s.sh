@@ -6,6 +6,8 @@ CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # Load common configuration and functions
 source "$CURRENT_DIR/common.sh"
 
+# Build environment variables
+ENV_VARS_OPTS=$(build_env_vars "s")
+
 # Prompt for single character
-ENV_VARS=$(build_env_vars "s")
-tmux command-prompt -1F -p 'easymotion:' "neww -d '$ENV_VARS $CURRENT_DIR/easymotion.py %1"
+tmux command-prompt -1F -p 'easymotion:' "new-window -d $ENV_VARS_OPTS $CURRENT_DIR/easymotion.py \"%%%\""

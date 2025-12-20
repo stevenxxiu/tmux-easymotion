@@ -7,12 +7,18 @@ CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source "$CURRENT_DIR/common.sh"
 
 # Build environment variables
-ENV_VARS=$(build_env_vars "s2")
+ENV_VAR_OPTS=$(build_env_var_opts "s2")
 
 # First prompt: get first character
-tmux command-prompt -1 -p 'easymotion char 1:' \
-    "set-option -g @_easymotion_tmp_char1 '%1'"
+tmux source - <<-EOF
+    command-prompt -1 -p 'easymotion char 1:' {
+        set-option -g @_easymotion_tmp_char1 "%1"
+    }
+EOF
 
 # Second prompt: get second character and launch easymotion
-tmux command-prompt -1F -p 'easymotion char 2: #{@_easymotion_tmp_char1}' \
-    "neww -d '$ENV_VARS $CURRENT_DIR/easymotion.py #{@_easymotion_tmp_char1}%1'"
+tmux source - <<-EOF
+    command-prompt -1 -p 'easymotion char 2: #{@_easymotion_tmp_char1}' {
+        run-shell -C "new-window -d $ENV_VAR_OPTS $CURRENT_DIR/easymotion.py \"#{q:@_easymotion_tmp_char1}%%%\""
+    }
+EOF
